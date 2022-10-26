@@ -1,0 +1,410 @@
+---
+title: "Industrial fishery in the Mexican Pacific under Climate Change"
+author: "Fabio Favoretto, Ricardo Cavieses Nuñez"
+date: "2022-10-14"
+categories: [fishery]
+image: "thumbnail.png"
+code-fold: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, echo=TRUE, results='hide', warning=FALSE, message=FALSE}
+
+# Loading libraries -------------------------------------------------------
+
+library(tidyverse)
+library(lubridate)
+library(mgcv)
+library(gratia)
+library(doParallel) 
+
+vms <- read_rds("../../data/vms_spatial.RDS")
+landings <- read_rds("../../data/landings.RDS")
+
+```
+
+Now that we know what happened to the Mexican Pacific regarding [climate change](https://cbmc-gcmp.github.io/McGovern_final_insight_blog/posts/climate-change-context/), we show the dynamics we know of the Mexican fishing industry, specifically the pelagic fleet, which is the target of our project. The Mexican pelagic fleet targets tuna, sharks, swordfish, and other pelagic animals using purse seiners and long lines. The fleet comprises around 100 powerful high-seas vessels that can store from 500 to 1,200 tons of catch in one trip.
+
+![An example of the fishing vessel deployed in the Pacific by the Pesca Azteca company.](images/paste-A20A9200.png)
+
+A first exploration to understand their traits is to see if their landings changed over time ( @fig-catches ). In fishery science usually catches are expressed in terms of Catches per Unit of Effort (CPUE) which standardize the catches for the amount of time needed to collect it. We can see a trend of CPUE in @fig-catches .
+
+```{r, dev.args = list(bg = 'transparent'), warning=FALSE, message=FALSE}
+#| label: fig-catches
+#| fig-cap: "Trend in fish catches over time in the Mexican Pacific"
+#| fig-subcap: TRUE
+#| layout-ncol: 2
+
+ave <- landings |>
+   filter(revi == "Yes") |> 
+   group_by(year) |> 
+   summarise(fishing_effort = mean(effort/1000)) |> 
+   as.data.frame() |> 
+   ungroup() |> 
+   ggplot(aes(x = year, y = fishing_effort)) + 
+      geom_line(col = "red") +
+      geom_smooth(col = "black") +
+      labs(x = "", y = "CPUE", title = "Average CPUE") +
+      theme_minimal() +
+      theme(panel.background = element_rect(fill = NA, color = NA),
+            axis.text.x = element_text(angle = 90),
+            panel.grid.minor = element_blank(),
+            panel.grid.major.x = element_blank(),
+            text = element_text(colour = "white"),
+            axis.text = element_text(colour = "white")
+      )
+
+tot <- landings |>
+   filter(revi == "Yes") |> 
+   group_by(year) |> 
+   summarise(fishing_effort = sum(effort/1000)) |> 
+   as.data.frame() |> 
+   ungroup() |> 
+   ggplot(aes(x = year, y = fishing_effort)) + 
+      geom_line(col = "red") +
+      geom_smooth(col = "black") +
+      labs(x = "", y = "CPUE", title = "Total CPUE") +
+      theme_minimal() +
+      theme(panel.background = element_rect(fill = NA, color = NA),
+            axis.text.x = element_text(angle = 90),
+            panel.grid.minor = element_blank(),
+            panel.grid.major.x = element_blank(),
+            text = element_text(colour = "white"),
+            axis.text = element_text(colour = "white")
+      )
+
+ave
+tot
+```
+
+It is reasonable to expect a decrease in catches, especially after seeing the effect temperature had over the Pacific. Average CPUE shows a significant (p < 0.01) decrease of 22% [95%CI: -50%, -6%] during the warming period ( @fig-catches-1 ), whereas if we look at total CPUE, an overall decreasing trend of 80.7 total CPUE loss each year ( @fig-catches-2 ). It seems that warming events are negatively influencing the catches. Particularly, summer months are the ones with larger impacts, with overall decreases in CPUE from May to October (@fig-bymonths-2). 
+
+```{r, warning=FALSE, message=FALSE, dev.args = list(bg = 'transparent')}
+#| label: fig-bymonths
+#| fig-cap: "Change of CPUE in each month from 2008 to 2022. a) compares the seasonal trend of CPUE over time; b) shows the difference between 2008 and 2022, highlighting how CPUE have changed in magnitude"
+#| fig-subcap: true
+#| layout-ncol: 2
+
+tomodel <- landings |>
+      filter(revi == "Yes") |> 
+      group_by(year, month) |> 
+      summarise(fishing_effort = round(sum(effort/1000))) |> 
+      as.data.frame() |> 
+      ungroup() |> 
+      rename(nMonth = month)
+
+
+
+knots <- list(nMonth = c(0.5, seq(1, 12, length = 10), 12.5))
+
+
+m_23 <- gamm(verbose = F,
+      fishing_effort ~ te(year, nMonth, bs = c("cr", "cc"), k = c(5, 12)),
+      family = "poisson",
+      data = tomodel,
+      method = "REML",
+      correlation = corARMA(form = ~ 1 | year, p = 1),
+      knots = knots
+)
+
+pdat <- with(tomodel,
+             data.frame(
+                   year = rep(seq(2008,2022), each = 100),
+                   nMonth = rep(seq(1, 12, length = 100), times = 15)
+             ))
+
+pred <- predict(m_23$gam, newdata = pdat, se.fit = TRUE)
+crit <- qt(0.975, df = df.residual(m_23$gam)) 
+pdat <- transform(
+      pdat,
+      fitted = pred$fit,
+      se = pred$se.fit,
+      fYear = as.factor(year)
+)
+pdat <- transform(pdat,
+                  upper = fitted + (crit * se),
+                  lower = fitted - (crit * se))
+
+p1 <- ggplot(pdat, aes(x = nMonth, y = fitted, group = fYear)) +
+      geom_line(aes(colour = fYear), size = 1.2) +   
+      labs(y = "CPUE",
+           x = "Month", 
+            col = "") +
+      scale_color_viridis_d() +
+      scale_x_continuous(breaks = 1:12,
+                         labels = month.abb,
+                          minor_breaks = NULL) +
+      theme_minimal() +
+      theme(
+            panel.background = element_rect(fill = NA, color = NA),
+            axis.text = element_text(colour = "white"),
+            panel.grid = element_line(colour = "gray50"),      
+            legend.position = "bottom",
+            text = element_text(colour = "white"),
+            legend.margin = margin()
+      )
+
+pred <- predict(m_23$gam, newdata = pdat, se.fit = TRUE)
+crit <- qt(0.975, df = df.residual(m_23$gam)) 
+pdat <- transform(
+      pdat,
+      fitted = pred$fit,
+      se = pred$se.fit,
+      fYear = as.factor(year)
+)
+pdat <- transform(pdat,
+                  upper = fitted + (crit * se),
+                  lower = fitted - (crit * se))
+
+p2 <- pdat %>%
+      pivot_wider(nMonth, names_from = year, values_from = fitted) %>%
+      mutate(diff = `2021` - `2008`) %>%
+      ggplot(aes(x = nMonth, y = diff)) +
+      geom_line(aes(col = "Difference in CPUE"), size = 1.2) +
+      scale_color_manual(values = "red") +
+      scale_x_continuous(breaks = 1:12,
+                         labels = month.abb,
+                         minor_breaks = NULL) +
+      labs(
+            y = "CPUE",
+            x = "Month", 
+            col = ""
+      ) +
+      geom_hline(yintercept = 0, size = 1, col = "white") +
+      theme_minimal() +
+      theme(
+            panel.background = element_rect(fill = NA, color = NA),
+            axis.text = element_text(colour = "white"),
+            panel.grid = element_line(colour = "gray50"),      
+            legend.position = "bottom",
+            text = element_text(colour = "white"),
+            legend.margin = margin()
+      )
+
+p1
+p2 
+
+```
+
+## Space-time model of fishing yields
+
+```{r, dev.args = list(bg = 'transparent'), warning=FALSE, message=FALSE}
+#| label: fig-latchange
+#| fig-cap: "Latitudinal change in fishing activity over time"
+
+mod_data_lat <- vms |>
+      group_by(date, latitude) |>
+      summarise(relative = mean(relative)) |>
+      mutate(Year = year(date), nMonth = month(date)) 
+
+fullM_sst <- bam(
+      relative ~
+            t2(
+                  Year,
+                  latitude,
+                  bs = c("tp", "tp"),
+                  k = c(10, 10),
+                  m = 2
+            ),
+      correlation = corARMA(form = ~ 1 | Year, p = 1),
+      data = mod_data_lat,
+      method = "REML"
+)
+
+new_data <-
+      data.frame(latitude = rep(seq(
+            from = -10, to = 31, by = 0.1
+      ), each = 13),
+      Year = rep(seq(
+            from = 2009, to = 2021, by = 1
+      ), 411))
+
+pred_paci <- predict(fullM_sst, new_data)
+
+lat_plot <- new_data |>
+         ggplot(aes(
+               x = Year,
+               y = latitude,
+               z = pred_paci,
+               fill = pred_paci
+         )) +
+      geom_raster(interpolate = TRUE) +
+      geom_contour(col = "black") +
+      labs(fill = "Relative CPUE", y = "Latitude") +
+      scale_x_continuous(breaks = seq(2008, 2022, by = 2)) +
+      scale_y_continuous(breaks = seq(-10, 32, by = 2)) +
+      scale_fill_distiller(
+            palette = "RdBu",
+            direction = -1,
+            type = "div"
+      ) +
+      theme_minimal() +
+      theme(
+            panel.grid = element_blank(),
+            legend.position = "bottom",
+            plot.title = element_text(face = "italic"),
+            axis.text.x = element_text(angle = 45, hjust = 1),
+            legend.title = element_text(vjust = .8),
+            text = element_text(colour = "white"),
+            axis.text = element_text(colour = "white"),
+            panel.background = element_rect(fill = NA, color = NA)
+      )
+
+mod_data_lat_long <- vms |>
+      mutate(Year = year(date), nMonth = month(date)) |> 
+      group_by(Year, nMonth, longitude) |> 
+      summarise(relative = mean(relative))
+       
+
+fullM_sst <- bam(
+      relative ~
+            t2(
+                  Year,
+                  longitude,
+                  bs = c("tp", "tp"),
+                  k = c(10, 10),
+                  m = 2
+            ),
+      correlation = corARMA(form = ~ 1 | Year, p = 1),
+      data = mod_data_lat_long,
+      method = "REML"
+)
+
+new_data_long <-
+      data.frame(longitude = rep(seq(
+            from = -140.0, to = -87.0, by = 0.1
+      ), each = 13),
+      Year = rep(seq(
+            from = 2009, to = 2021, by = 1
+      ), 531))
+
+pred_paci_long <- predict(fullM_sst, new_data_long)
+
+long_plot <- new_data_long |>
+      ggplot(aes(
+            x = Year,
+            y = longitude,
+            z = pred_paci_long,
+            fill = pred_paci_long
+      )) +
+      geom_raster(interpolate = TRUE) +
+      geom_contour(col = "black") +
+      labs(fill = "Relative CPUE", y = "Longitude") +
+      scale_x_continuous(breaks = seq(2008, 2022, by = 2)) +
+      scale_y_continuous(breaks = seq(-140, -87, by = 2)) +
+      scale_fill_distiller(
+            palette = "RdBu",
+            direction = -1,
+            type = "div"
+      ) +
+      theme_minimal() +
+      theme(
+            panel.grid = element_blank(),
+            legend.position = "bottom",
+            plot.title = element_text(face = "italic"),
+            axis.text.x = element_text(angle = 45, hjust = 1),
+            legend.title = element_text(vjust = .8),
+            text = element_text(colour = "white"),
+            axis.text = element_text(colour = "white"),
+            panel.background = element_rect(fill = NA, color = NA)
+      )
+
+
+```
+
+```{r, dev.args = list(bg = 'transparent'), warning=FALSE, message=FALSE}
+#| label: fig-lonlatchange
+#| fig-cap: "Spatiotemporal variation in relative catch per unit of effort (CPUE) in the Mexican Pacific by a) Latitude, and b) longitude"
+#| fig-subcap: TRUE
+#| layout-ncol: 2
+
+lat_plot
+long_plot
+
+```
+
+Finally, we can see the trend changes by each of the fishing areas over time.
+
+```{r, dev.args = list(bg = 'transparent'), message=FALSE, warning=FALSE}
+vms_Trend <- readRDS(file = "../../data/vms_Trend.RDS")
+
+map_base <-
+      ggplot2::fortify(maps::map(fill = TRUE, plot = FALSE)) %>%
+      dplyr::rename(lon = long)
+
+vms_tomap <- vms_Trend |>
+      mutate(lat = round(lat), lon = round(lon)) |>
+      group_by(lon, lat) |>
+      summarise(slope = mean(slope)) |>
+      mutate(slope = round(slope, 2)) |>
+      filter(slope != 0)
+
+map_slope <- ggplot() +
+      geom_raster(
+            data = vms_tomap,
+            aes(
+                  x = lon,
+                  y = lat,
+                  fill = log1p(slope),
+                  col = "black"
+            ),
+            interpolate = FALSE,
+            alpha = 0.9
+      ) +
+      scale_fill_gradient2(
+            name = "Relative CPUE/year (slope)",
+            high = "firebrick",
+            mid = "gray90",
+            low = "darkblue",
+            na.value = NA,
+            midpoint = 0,
+            guide = guide_colourbar(
+                  direction = "horizontal",
+                  title.position = "top",
+                  ticks.colour = "black"
+            )
+      ) +
+      geom_polygon(
+            data = map_base,
+            aes(x = lon, y = lat, group = group),
+            col = NA,
+            fill = "grey80"
+      ) +
+      geom_sf(
+            data = dafishr::mx_shape,
+            col = "black",
+            fill = "gray99",
+            alpha = .2
+      ) +
+      coord_sf(xlim = c(-150, -80),
+               ylim = c(-10, 32),
+               clip = "on") +
+      labs(x = "", y = "") +
+      theme_minimal() +
+      theme(
+            panel.background = element_rect(fill = NA, color = NA),
+            plot.background = element_rect(fill = NA, color = NA),
+            axis.text.x = element_text(angle = 90),
+            legend.position = "bottom",
+            legend.text = element_text(angle = 90, vjust = .5),
+            text = element_text(color = "white"),
+            axis.text = element_text(color = "white")
+      )
+
+map_slope 
+```
+
+### Machine Learning forecast 
+
+```{r}
+
+read_csv("../../data/forecast_own_model.csv") |> 
+      ggplot(aes(x=year, y=final_yeld)) +
+      geom_point() +
+      geom_smooth()
+
+
+
+```
+

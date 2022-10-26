@@ -1,0 +1,19 @@
+project:
+  type: website
+  output-dir: docs
+website:
+  title: "Final Insight Report CBMC"
+  navbar:
+    right:
+      - about.qmd
+      - icon: github
+        href: https://github.com/CBMC-GCMP
+      - icon: twitter
+        href: https://twitter.com/cbmclapaz
+format:
+  html:
+    theme: solar
+    css: styles.css
+
+
+
