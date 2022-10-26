@@ -37,4 +37,6 @@ This data will be critical in monitoring the effects of climate change on the fi
 
 Our analysis also underlines the importance of geospatial data like VMS for fishery assessments. We hope more researchers will use our package to download and analyze data to provide further insights.
 
+All data needed to replicate the analysis showcased here can be downloaded from [here](https://github.com/CBMC-GCMP/accelerator-grant-cbmc/tree/master/data). Full datasets of permits, landings, and VMS data is available through our R package [dafishr](https://github.com/CBMC-GCMP/dafishr).
+
 ![](/figs/profile.png){fig-align="center" width="210"}

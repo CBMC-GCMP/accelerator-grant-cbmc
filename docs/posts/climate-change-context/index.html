@@ -85,6 +85,25 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -348,7 +367,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
-<p>Such a pattern ( <a href="#fig-spacetime">Figure&nbsp;3</a> ) suggests that areas at higher latitudes can warm faster, and organisms that inhabit them can be relatively more threatened as they evolved in lower temperature regimes (<span class="citation" data-cites="cheung2013">@cheung2013</span>; <span class="citation" data-cites="cheung2010">@cheung2010</span>) .</p>
+<p>Such a pattern ( <a href="#fig-spacetime">Figure&nbsp;3</a> ) suggests that areas at higher latitudes can warm faster, and organisms that inhabit them can be relatively more threatened as they evolved in lower temperature regimes (<span class="citation" data-cites="cheung2013">Cheung, Watson, and Pauly (<a href="#ref-cheung2013" role="doc-biblioref">2013</a>)</span>; <span class="citation" data-cites="cheung2010">(<a href="#ref-cheung2010" role="doc-biblioref"><strong>cheung2010?</strong></a>)</span>) .</p>
 <p>To model how seasonality has changed, i.e.&nbsp;how variation in monthly temperatures occurred from 1982 to 2022 <a href="#fig-bymonths">Figure&nbsp;4</a>, we used generalized additive models described in the <em>methods</em> section of this site.</p>
 <div>
 <details>
@@ -482,7 +501,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="climate-vulnerability" class="level2">
 <h2 class="anchored" data-anchor-id="climate-vulnerability">Climate vulnerability</h2>
-<p>The best way to represent the vulnerability to climate extremes is to study extreme weather events and their frequency over time. As climate warms gradually, it is also causing an increase in frequency and magnitude of some extreme events. Recently, marine heatwaves have been defined <span class="citation" data-cites="holbrook2020">@holbrook2020</span> and we know that are causing significant effects on fisheries <span class="citation" data-cites="cheung2020">@cheung2020</span> . The heatwaves analysis was calculated over each 0.1x0.1 degree pixel of the available temperature data, methods can be found <strong>here</strong>.</p>
+<p>The best way to represent the vulnerability to climate extremes is to study extreme weather events and their frequency over time. As climate warms gradually, it is also causing an increase in frequency and magnitude of some extreme events. Recently, marine heatwaves have been defined <span class="citation" data-cites="holbrook2020">(<a href="#ref-holbrook2020" role="doc-biblioref"><strong>holbrook2020?</strong></a>)</span> and we know that are causing significant effects on fisheries <span class="citation" data-cites="cheung2020">Cheung and Frölicher (<a href="#ref-cheung2020" role="doc-biblioref">2020</a>)</span> . The heatwaves analysis was calculated over each 0.1x0.1 degree pixel of the available temperature data, methods can be found <strong>here</strong>.</p>
 <div>
 <details>
 <summary>Code</summary>
@@ -624,9 +643,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>As extreme Marine Heatwaves (MHWs) increased all over the Mexican Pacific <a href="#fig-heatwaves-1">Figure&nbsp;5 (a)</a> the California Current directly influences an area that shows an inverse trend. A negative trend in MHWs suggests that this area might be critical as a refuge area and hotspot of future productivity under climate change scenarios. Identifying these regional differences underlines the importance of these smaller-scale analyses to understand the magnitude of localized climate impacts better. In the next sections, we will compare this spatio-temporal variation to fishing activity to understand its response.</p>
 
 
+
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-cheung2020" class="csl-entry" role="doc-biblioentry">
+Cheung, William W. L., and Thomas L. Frölicher. 2020. <span>“Marine Heatwaves Exacerbate Climate Change Impacts for Fisheries in the Northeast Pacific.”</span> <em>Scientific Reports</em> 10 (1): 6678. <a href="https://doi.org/10.1038/s41598-020-63650-z">https://doi.org/10.1038/s41598-020-63650-z</a>.
+</div>
+<div id="ref-cheung2013" class="csl-entry" role="doc-biblioentry">
+Cheung, William W. L., Reg Watson, and Daniel Pauly. 2013. <span>“Signature of Ocean Warming in Global Fisheries Catch.”</span> <em>Nature</em> 497 (7449): 365368. <a href="https://doi.org/10.1038/nature12156">https://doi.org/10.1038/nature12156</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

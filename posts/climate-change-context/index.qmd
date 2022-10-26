@@ -7,6 +7,7 @@ image: "thumbnail.png"
 code-fold: true
 editor_options: 
   chunk_output_type: console
+bibliography: references.bib
 ---
 
 ```{r warning=FALSE, message=FALSE, echo=TRUE, results='hide'}
@@ -137,7 +138,7 @@ pred_paci <- predict(fullM_sst, new_data)
 
 ```
 
-Such a pattern ( @fig-spacetime ) suggests that areas at higher latitudes can warm faster, and organisms that inhabit them can be relatively more threatened as they evolved in lower temperature regimes (@cheung2013; @cheung2010) .
+Such a pattern ( @fig-spacetime ) suggests that areas at higher latitudes can warm faster, and organisms that inhabit them can be relatively more threatened as they evolved in lower temperature regimes (@cheung2013 ) .
 
 To model how seasonality has changed, i.e. how variation in monthly temperatures occurred from 1982 to 2022 @fig-bymonths, we used generalized additive models described in the *methods* section of this site.
 
@@ -253,7 +254,7 @@ Over the Mexican Pacific, summer has been 0.75 degrees Celsius higher than histo
 
 ## Climate vulnerability
 
-The best way to represent the vulnerability to climate extremes is to study extreme weather events and their frequency over time. As climate warms gradually, it is also causing an increase in frequency and magnitude of some extreme events. Recently, marine heatwaves have been defined @holbrook2020 and we know that are causing significant effects on fisheries @cheung2020 . The heatwaves analysis was calculated over each 0.1x0.1 degree pixel of the available temperature data, methods can be found **here**.
+The best way to represent the vulnerability to climate extremes is to study extreme weather events and their frequency over time. As climate warms gradually, it is also causing an increase in frequency and magnitude of some extreme events. Recently, marine heatwaves have been defined @holbrook2019 and we know that are causing significant effects on fisheries @cheung2020 . The heatwaves analysis was calculated over each 0.1x0.1 degree pixel of the available temperature data, methods can be found **here**.
 
 ```{r, warning=FALSE, message=FALSE, dev.args = list(bg = 'transparent')}
 #| label: fig-heatwaves
