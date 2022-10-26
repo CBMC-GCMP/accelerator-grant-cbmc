@@ -36,9 +36,7 @@ VMS data can be modeled based on speed to infer potential fishing activities fro
 
 We used only vessels that had permits for purse seine and longlines fishing gears targeting tuna, shark, and swordfish species. Once calculated the potential fishing hours from the Gaussian modeled activities, we created a timeseries of monthly total fishing hours by total number of active vessels. We then used the landings dataset to associate the same vessels by name to the catch they reported once they got back on port.
 
-![Workflow diagram representing the steps of the VMS data analysis.](images/paste-F4A09297.png){width="376"}
-
-![Workflow diagram representing the steps of the VMS data analysis.](images/paste-F4A09297.png){fig-align="center" width="376"}
+![Workflow diagram representing the steps of the VMS da](images/paste-F4A09297.png){width="376"}
 
 ![Example of Gaussian mixture models using an expectation-maximization algorithm (6) to estimate the parameters of the multimodal speed distribution using the mixtools R package (7). We assumed three univariate normal distributions corresponding to three states of a vessel: fishing, deploying gear, and steaming. The starting values for the mean and standard deviation for each underlying distribution are estimated visually using this histogram showing the multimodal distribution of speed.](images/paste-43D202DF.png){fig-align="center" width="396"}
 

@@ -7,6 +7,7 @@ image: "thumbnail.png"
 code-fold: true
 editor_options: 
   chunk_output_type: console
+bibliography: references.bib
 ---
 
 ```{r, echo=TRUE, results='hide', warning=FALSE, message=FALSE}
@@ -24,9 +25,9 @@ landings <- read_rds("../../data/landings.RDS")
 
 ```
 
-Now that we know what happened to the Mexican Pacific regarding [climate change](https://cbmc-gcmp.github.io/McGovern_final_insight_blog/posts/climate-change-context/), we show the dynamics we know of the Mexican fishing industry, specifically the pelagic fleet, which is the target of our project. The Mexican pelagic fleet targets tuna, sharks, swordfish, and other pelagic animals using purse seiners and long lines. The fleet comprises around 100 powerful high-seas vessels that can store from 500 to 1,200 tons of catch in one trip.
+Now that we know what happened to the Mexican Pacific regarding [climate change](https://cbmc-gcmp.github.io/accelerator-grant-cbmc/posts/climate-change-context/), we show the dynamics we know of the Mexican fishing industry, specifically the pelagic fleet, which is the target of our project. The Mexican pelagic fleet targets tuna, sharks, swordfish, and other pelagic animals using purse seiners and long lines. The fleet comprises around 100 powerful high-seas vessels that can store from 500 to 1,200 tons of catch in one trip.
 
-![An example of the fishing vessel deployed in the Pacific by the Pesca Azteca company.](images/paste-A20A9200.png)
+![An example of the fishing vessel deployed in the Pacific by the Pesca Azteca company.](images/paste-A20A9200.png){#fig-azteca}
 
 A first exploration to understand their traits is to see if their landings changed over time ( @fig-catches ). In fishery science usually catches are expressed in terms of Catches per Unit of Effort (CPUE) which standardize the catches for the amount of time needed to collect it. We can see a trend of CPUE in @fig-catches .
 
@@ -78,7 +79,7 @@ ave
 tot
 ```
 
-It is reasonable to expect a decrease in catches, especially after seeing the effect temperature had over the Pacific. Average CPUE shows a significant (p < 0.01) decrease of 22% [95%CI: -50%, -6%] during the warming period ( @fig-catches-1 ), whereas if we look at total CPUE, an overall decreasing trend of 80.7 total CPUE loss each year ( @fig-catches-2 ). It seems that warming events are negatively influencing the catches. Particularly, summer months are the ones with larger impacts, with overall decreases in CPUE from May to October (@fig-bymonths-2). 
+It is reasonable to expect a decrease in catches, especially after seeing the effect temperature had over the Pacific. Average CPUE shows a significant (*p* \< 0.01) decrease of 22% \[95%CI: -50%, -6%\] during the warming period ( @fig-catches-1 ), whereas if we look at total CPUE, an overall **decreasing trend of 80.7 total CPUE** (in metric tons) lost each year ( @fig-catches-2 ). It seems that warming events are negatively influencing the catches. Particularly, summer months are the ones with larger impacts, with overall decreases in CPUE from May to October (@fig-bymonths-2).
 
 ```{r, warning=FALSE, message=FALSE, dev.args = list(bg = 'transparent')}
 #| label: fig-bymonths
@@ -189,9 +190,17 @@ p2
 
 ## Space-time model of fishing yields
 
+The industrial fishing fleet is highly adaptable. When fishing is discussed, one often pictures an artisanal fisherman roaming coastal waters. However, the reality is that fisheries are highly industrialized, and Mexico is no exception. Some of these vessels' capacity is large regarding autonomy at sea and catch yield ( @fig-azteca ).
+
+Such a capacity allows them to counteract climate change events by changing fishing grounds, or increasing fishing efforts. The most important fishing grounds are located northward, and fishing activity has increased at higher latitudes (32 degrees). Such a shift is related to species redistribution as noted by previous studies @cheung2010 .
+
+Vessels also used a specific part of the Mexican Pacific from -100 to -120 degrees of latitude. The area corresponds to the influence of the Southern California Current. It underlines the importance of the functioning of this current for marine productivity and the fishery it sustains.
+
 ```{r, dev.args = list(bg = 'transparent'), warning=FALSE, message=FALSE}
-#| label: fig-latchange
-#| fig-cap: "Latitudinal change in fishing activity over time"
+#| label: fig-lonlatchange
+#| fig-cap: "Spatiotemporal variation in relative catch per unit of effort (CPUE) in the Mexican Pacific by a) Latitude, and b) longitude"
+#| fig-subcap: TRUE
+#| layout-ncol: 2
 
 mod_data_lat <- vms |>
       group_by(date, latitude) |>
@@ -309,24 +318,19 @@ long_plot <- new_data_long |>
             axis.text = element_text(colour = "white"),
             panel.background = element_rect(fill = NA, color = NA)
       )
-
-
-```
-
-```{r, dev.args = list(bg = 'transparent'), warning=FALSE, message=FALSE}
-#| label: fig-lonlatchange
-#| fig-cap: "Spatiotemporal variation in relative catch per unit of effort (CPUE) in the Mexican Pacific by a) Latitude, and b) longitude"
-#| fig-subcap: TRUE
-#| layout-ncol: 2
-
 lat_plot
 long_plot
 
 ```
 
-Finally, we can see the trend changes by each of the fishing areas over time.
+Industrial vessels also are stretching further at sea, pushed by the overexploitation of coastal areas and the improvement of marine technologies. Exploiting the high seas ( @fig-spattrend ) represents an ecological threat, and fishery management becomes more complex to implement.
+
+This spatial displacement allows industrial fisheries to maintain their catches in an overexploited Mexican Pacific. Therefore, if we look at just the catches, we would not be able to understand the complete picture that the spatial displacement is showing. This underlines the importance of the accelerator grant that aided us in deploying sufficient computational power to analyze the entire Vessel Monitoring System database (see [VMS section](https://cbmc-gcmp.github.io/accelerator-grant-cbmc/posts/an-intro-to-vms-data/) for further description of the dataset).
 
 ```{r, dev.args = list(bg = 'transparent'), message=FALSE, warning=FALSE}
+#| label: fig-spattrend
+#| fig-cap: "Spatiotemporal variation in relative catch per unit of effort (CPUE) in the Mexican Pacific by a) Latitude, and b) longitude"
+
 vms_Trend <- readRDS(file = "../../data/vms_Trend.RDS")
 
 map_base <-
@@ -395,16 +399,30 @@ map_slope <- ggplot() +
 map_slope 
 ```
 
-### Machine Learning forecast 
+### Machine Learning forecast
 
-```{r}
-
-read_csv("../../data/forecast_own_model.csv") |> 
-      ggplot(aes(x=year, y=final_yeld)) +
-      geom_point() +
-      geom_smooth()
-
+```{r, dev.args = list(bg = 'transparent'), message=FALSE, warning=FALSE}
+#| label: fig-MLprediction
+#| fig-cap: "Prediction of average CPUE due to climate change effects"
+ml_output <- read_csv("../../data/forecast_own_model.csv")
+ml_output |> 
+      ggplot(aes(x = year, y = final_yeld)) +
+      geom_point(col = "red") +
+      geom_smooth(method = "lm", col = "red") +
+      labs(x = "Years", y = "CPUE") +
+      theme_minimal() +
+      theme(
+            panel.background = element_rect(fill = NA, color = NA), 
+            panel.grid = element_line(color = "gray60"), 
+            plot.background = element_rect(fill = NA, color = NA),
+            axis.text.x = element_text(angle = 90),
+            legend.position = "bottom",
+            legend.text = element_text(angle = 90, vjust = .5),
+            text = element_text(color = "white"),
+            axis.text = element_text(color = "white")
+      )
 
 
 ```
 
+The machine learning model uses temperature, oxygen concentration, pH, and marine primary productivity to forecast overall CPUE for the industrial fishing fleet up to 2030 (see [methods](https://cbmc-gcmp.github.io/accelerator-grant-cbmc/posts/methods/#machine-learning-model) for further details) . We found a significant decrease of CPUE (slope = -0.55, 95% CI \[-0.72, -0.37\], *p* \< .001) over time @fig-MLprediction, confirming the effects of temperature variation on the potential fishing areas in the Mexican Pacific. The model therefore forecasts that by 2030 the average CPUE for the industrial vessels will be around 15 (CPUE, in tons) instead of the average of 28 of 2008-2015 period.
