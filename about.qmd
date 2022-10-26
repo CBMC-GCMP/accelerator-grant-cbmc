@@ -1,6 +1,6 @@
 ---
 title: "About"
-image: profile.png
+image: figs/profile.png
 about:
   template: jolla
   links:
@@ -10,9 +10,6 @@ about:
     - icon: github
       text: Github
       href: https://github.com/CBMC-GCMP
-
 ---
 
-We are the Centro para la Biodiversidad Marina y la Conservación, A.C. which is based in Mexico. We had the luck to be supported by the Patrick J. McGovern foundation accelerator grant which allowed us to grow our data maturity as a whole organization. 
-
-
+We are the Centro para la Biodiversidad Marina y la Conservación, A.C. which is based in Mexico. We had the luck to be supported by the Patrick J. McGovern foundation accelerator grant which allowed us to grow our data maturity as a whole organization.
