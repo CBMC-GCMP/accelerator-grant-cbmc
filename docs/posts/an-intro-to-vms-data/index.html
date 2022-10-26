@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.189">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Fabio Favoretto, Eduardo León Solórzano">
+<meta name="dcterms.date" content="2022-10-03">
+
+<title>Final Insight Report CBMC - An Introduction to VMS Data</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Final Insight Report CBMC</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/CBMC-GCMP"><i class="bi bi-github" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/cbmclapaz"><i class="bi bi-twitter" role="img">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">An Introduction to VMS Data</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">fishery</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Fabio Favoretto, Eduardo León Solórzano </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">October 3, 2022</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p>The Vessel Monitoring System is designed to monitor all industrial fishing vessels with a registered fishing permit under the Comisión Nacional de Acuacultura y Pesca (CONAPESCA). The system works by registering latitude, longitude, speed, and direction of each vessel on a hourly interval from 2008 to 2021. The full VMS dataset reports vessel’s name, unique ID, speed, and navigation bearing. After cleaning and standardization, the dataset has ~150 million data rows, representing tracks of 2287 industrial vessels, totaling approximately 35 gigabytes.</p>
+<section id="data-preprocessing" class="level3">
+<h3 class="anchored" data-anchor-id="data-preprocessing">Data preprocessing</h3>
+<p>The process of downloading and wrangling data, the datasets’ structure, and a schematic view of the analysis workflow is explained in detail in hour GitHub repository documentation: https://cbmc-gcmp.github.io/dafishr/articles/Supplementary.html through a process that if fully reproducible on a personal computer with at least 16 GB of RAM memory. We coded all this pre-processing and follow-up analysis with the R programming language (R-Core-Team 2020) using the RStudio integrated development environment (RStudio-Team 2020). For convenience we created an R package “dafishr” that is available for free download in the <a href="https://cbmc-gcmp.github.io/dafishr/">dedicated repository</a> GitHub page which contains all the dependencies and functions needed.</p>
+</section>
+<section id="data-cleaning-and-formatting" class="level3">
+<h3 class="anchored" data-anchor-id="data-cleaning-and-formatting">Data cleaning and formatting</h3>
+<p>Raw data can be downloaded by the year and are organized in several tabular files representing a monthly or by-weekly intervals. Then the preprocessing finds and eventually filter outs if needed: corrupted latitude, longitude, or speed entries that have obvious erroneous values; format dates and label corrupted ones. In the files the information stored is sometimes inconsistent and there are some errors within the rows, for example some corrupted dates or vessel codes. The most evident case came from the RLMSEP_2020/10.-OCTUBRE/16-31 OCT 2020.csv file which had all dates corrupted and we filtered it out from our analyses.</p>
+</section>
+<section id="spatial-cleaning-and-labeling" class="level3">
+<h3 class="anchored" data-anchor-id="spatial-cleaning-and-labeling">Spatial cleaning and labeling</h3>
+<p>After the cleaning step the preprocessing performs a spatial intersection with a vector file representing land to further eliminating dubious points falling inland, and after that creates a buffer of 0.025 degrees (~2.6 km) around ports to spatially label all vessel activity within port and exclude them from potential fishing activity modeling. The preprocessing then intersects all the coordinates with a polygon representing the Pacific portion of the Mexican Exclusive Economic Zone and all the Marine Protected Areas polygons (MPAs) in Mexico.</p>
+</section>
+<section id="data-checks" class="level3">
+<h3 class="anchored" data-anchor-id="data-checks">Data checks</h3>
+<p>After all the cleaning steps, a global check of dates is made to be sure that all data are in the correct units, and that no vessels have wrong hours of activities assigned to them (e.g., more than 24 hours in a day). Through this step, we realized that some tracks are reported in minutes, thus we homogenized all data by hours and for those points reported in minutes we averaged the latitude and longitude coordinates.</p>
+</section>
+<section id="modeling" class="level3">
+<h3 class="anchored" data-anchor-id="modeling">Modeling</h3>
+<p>Fishing activity modeling</p>
+<p>VMS data can be modeled based on speed to infer potential fishing activities from vessel tracks and understand vessel behavior. For example, whether a vessel was cruising or if it was slowing down to deploy fishing gear. Not all the methods used to model fishing behavior are easily reproducible on a personal computer or are open source (2–6). We used a trip-based Gaussian mixture model, which has a lower maximum error rate per trip, low false-positive rates, and good performance in terms of computing efficiency when applied to VMS data (5). These characteristics allow an accurate estimation of the spatial distribution of active fishing while also being computationally efficient. We fitted the Gaussian mixture models using an expectation-maximization algorithm (6) to estimate the parameters of the multimodal speed distribution using the mixtools R package (7). We assumed three univariate normal distributions corresponding to three states of a vessel: fishing, deploying gear, and steaming. The starting values for the mean and standard deviation for each underlying distribution were estimated visually using a histogram showing the multimodal distribution of speed (Figure S2). We then defined the upper limit to the distribution for the fishing state by estimating the mean and adding two standard deviations to it. The model labels all positional records with speeds exceeding the upper limit as “not fishing” (encompassing deployment and steaming). Such labeling also grants a degree of conservatism to our model since deployment and steaming speeds sometimes overlap.</p>
+</section>
+<section id="fishing-hours-and-catch-data" class="level3">
+<h3 class="anchored" data-anchor-id="fishing-hours-and-catch-data">Fishing hours and catch data</h3>
+<p>We used only vessels that had permits for purse seine and longlines fishing gears targeting tuna, shark, and swordfish species. Once calculated the potential fishing hours from the Gaussian modeled activities, we created a timeseries of monthly total fishing hours by total number of active vessels. We then used the landings dataset to associate the same vessels by name to the catch they reported once they got back on port.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/paste-F4A09297.png" class="img-fluid figure-img" width="376"></p>
+<p></p><figcaption class="figure-caption">Workflow diagram representing the steps of the VMS data analysis.</figcaption><p></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/paste-F4A09297.png" class="img-fluid figure-img" width="376"></p>
+<p></p><figcaption class="figure-caption">Workflow diagram representing the steps of the VMS data analysis.</figcaption><p></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/paste-43D202DF.png" class="img-fluid figure-img" width="396"></p>
+<p></p><figcaption class="figure-caption">Example of Gaussian mixture models using an expectation-maximization algorithm (6) to estimate the parameters of the multimodal speed distribution using the mixtools R package (7). We assumed three univariate normal distributions corresponding to three states of a vessel: fishing, deploying gear, and steaming. The starting values for the mean and standard deviation for each underlying distribution are estimated visually using this histogram showing the multimodal distribution of speed.</figcaption><p></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/before.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">The full footprint of the Mexican Industrial fishing fleet of the open ocean in the Mexican Pacific</figcaption><p></p>
+</figure>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
