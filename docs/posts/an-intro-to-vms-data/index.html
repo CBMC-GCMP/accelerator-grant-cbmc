@@ -22,6 +22,25 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
 }
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -161,7 +180,7 @@ ul.task-list li input[type="checkbox"] {
 <section id="modeling" class="level3">
 <h3 class="anchored" data-anchor-id="modeling">Modeling</h3>
 <p>Fishing activity modeling</p>
-<p>VMS data can be modeled based on speed to infer potential fishing activities from vessel tracks and understand vessel behavior. For example, whether a vessel was cruising or if it was slowing down to deploy fishing gear. Not all the methods used to model fishing behavior are easily reproducible on a personal computer or are open source (2–6). We used a trip-based Gaussian mixture model, which has a lower maximum error rate per trip, low false-positive rates, and good performance in terms of computing efficiency when applied to VMS data (5). These characteristics allow an accurate estimation of the spatial distribution of active fishing while also being computationally efficient. We fitted the Gaussian mixture models using an expectation-maximization algorithm (6) to estimate the parameters of the multimodal speed distribution using the mixtools R package (7). We assumed three univariate normal distributions corresponding to three states of a vessel: fishing, deploying gear, and steaming. The starting values for the mean and standard deviation for each underlying distribution were estimated visually using a histogram showing the multimodal distribution of speed (Figure S2). We then defined the upper limit to the distribution for the fishing state by estimating the mean and adding two standard deviations to it. The model labels all positional records with speeds exceeding the upper limit as “not fishing” (encompassing deployment and steaming). Such labeling also grants a degree of conservatism to our model since deployment and steaming speeds sometimes overlap.</p>
+<p>VMS data can be modeled based on speed to infer potential fishing activities from vessel tracks and understand vessel behavior. For example, whether a vessel was cruising or if it was slowing down to deploy fishing gear. Not all the methods used to model fishing behavior are easily reproducible on a personal computer or are open source <span class="citation" data-cites="eastwood2007 kroodsma2018">(<a href="#ref-eastwood2007" role="doc-biblioref">Eastwood et al. 2007</a>; <a href="#ref-kroodsma2018" role="doc-biblioref">Kroodsma et al. 2018</a>)</span>. We used a trip-based Gaussian mixture model, which has a lower maximum error rate per trip, low false-positive rates, and good performance in terms of computing efficiency when applied to VMS data <span class="citation" data-cites="mendo2019">(<a href="#ref-mendo2019" role="doc-biblioref">Mendo et al. 2019</a>)</span>. These characteristics allow an accurate estimation of the spatial distribution of active fishing while also being computationally efficient. We fitted the Gaussian mixture models using an expectation-maximization algorithm <span class="citation" data-cites="natale2015">(<a href="#ref-natale2015" role="doc-biblioref">Natale et al. 2015</a>)</span> to estimate the parameters of the multimodal speed distribution using the mixtools R package <span class="citation" data-cites="benaglia2009">(<a href="#ref-benaglia2009" role="doc-biblioref">Benaglia et al. 2009</a>)</span>. We assumed three univariate normal distributions corresponding to three states of a vessel: fishing, deploying gear, and steaming. The starting values for the mean and standard deviation for each underlying distribution were estimated visually using a histogram showing the multimodal distribution of speed ( <a href="#fig-model">Figure&nbsp;1</a> ) . We then defined the upper limit to the distribution for the fishing state by estimating the mean and adding two standard deviations to it. The model labels all positional records with speeds exceeding the upper limit as “not fishing” (encompassing deployment and steaming). Such labeling also grants a degree of conservatism to our model since deployment and steaming speeds sometimes overlap.</p>
 </section>
 <section id="fishing-hours-and-catch-data" class="level3">
 <h3 class="anchored" data-anchor-id="fishing-hours-and-catch-data">Fishing hours and catch data</h3>
@@ -172,10 +191,10 @@ ul.task-list li input[type="checkbox"] {
 <p></p><figcaption class="figure-caption">Workflow diagram representing the steps of the VMS da</figcaption><p></p>
 </figure>
 </div>
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-model" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="images/paste-43D202DF.png" class="img-fluid figure-img" width="396"></p>
-<p></p><figcaption class="figure-caption">Example of Gaussian mixture models using an expectation-maximization algorithm (6) to estimate the parameters of the multimodal speed distribution using the mixtools R package (7). We assumed three univariate normal distributions corresponding to three states of a vessel: fishing, deploying gear, and steaming. The starting values for the mean and standard deviation for each underlying distribution are estimated visually using this histogram showing the multimodal distribution of speed.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;1: Example of Gaussian mixture models using an expectation-maximization algorithm (6) to estimate the parameters of the multimodal speed distribution using the mixtools R package (7). We assumed three univariate normal distributions corresponding to three states of a vessel: fishing, deploying gear, and steaming. The starting values for the mean and standard deviation for each underlying distribution are estimated visually using this histogram showing the multimodal distribution of speed.</figcaption><p></p>
 </figure>
 </div>
 <div class="quarto-figure quarto-figure-center">
@@ -186,9 +205,26 @@ ul.task-list li input[type="checkbox"] {
 </div>
 
 
+
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-benaglia2009" class="csl-entry" role="doc-biblioentry">
+Benaglia, Tatiana, Didier Chauveau, David R. Hunter, and Derek S. Young. 2009. <span>“Mixtools : An r Package for Analyzing Finite Mixture Models.”</span> <em>Journal of Statistica Software</em> 32 (6). <a href="http://www.jstatsoft.org/">http://www.jstatsoft.org/</a>.
+</div>
+<div id="ref-eastwood2007" class="csl-entry" role="doc-biblioentry">
+Eastwood, P. D., C. M. Mills, J. N. Aldridge, C. A. Houghton, and S. I. Rogers. 2007. <span>“Human Activities in UK Offshore Waters: An Assessment of Direct, Physical Pressure on the Seabed.”</span> <em>ICES Journal of Marine Science</em> 64 (3): 453463. <a href="https://doi.org/10.1093/icesjms/fsm001">https://doi.org/10.1093/icesjms/fsm001</a>.
+</div>
+<div id="ref-kroodsma2018" class="csl-entry" role="doc-biblioentry">
+Kroodsma, David A., Juan Mayorga, Timothy Hochberg, Nathan A. Miller, Kristina Boerder, Francesco Ferretti, Alex Wilson, et al. 2018. <span>“Tracking the Global Footprint of Fisheries.”</span> <em>Science</em> 359 (6378): 904908. <a href="https://doi.org/10.1126/science.aao5646">https://doi.org/10.1126/science.aao5646</a>.
+</div>
+<div id="ref-mendo2019" class="csl-entry" role="doc-biblioentry">
+Mendo, Tania, Sophie Smout, Theoni Photopoulou, and Mark James. 2019. <span>“Identifying Fishing Grounds from Vessel Tracks: Model-Based Inference for Small Scale Fisheries.”</span> <em>Royal Society Open Science</em> 6 (10): 191161. <a href="https://doi.org/10.1098/rsos.191161">https://doi.org/10.1098/rsos.191161</a>.
+</div>
+<div id="ref-natale2015" class="csl-entry" role="doc-biblioentry">
+Natale, Fabrizio, Maurizio Gibin, Alfredo Alessandrini, Michele Vespe, and Anton Paulrud. 2015. <span>“Mapping Fishing Effort Through AIS Data.”</span> <em>PLOS ONE</em> 10 (6): e0130746. <a href="https://doi.org/10.1371/journal.pone.0130746">https://doi.org/10.1371/journal.pone.0130746</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
