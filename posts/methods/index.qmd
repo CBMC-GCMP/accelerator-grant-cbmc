@@ -12,11 +12,11 @@ bibliography: references.bib
 
 ### Gathering temperature data
 
-We retrieved Reynolds optimally interpolated sea surface temperature (OISST) data corresponding to the Mexican Pacific (Figure S1), including the Gulf of California (Figure S2). The OISST product is a global 0.25x0.25 degree gridded dataset of Advanced Very High-Resolution Radiometer (AVHRR) derived sea surface temperatures at a daily resolution, from 1982 to 2020. Further in the text, we refer to OISST data as simply SST. The source data is currently available at: https://www.ncdc.noaa.gov/oisst. The code was written in R studio IDE (v.1.4.1717) working on R v.4.1.2.
+We retrieved Reynolds optimally interpolated sea surface temperature (OISST) data corresponding to the Mexican Pacific, including the Gulf of California. The OISST product is a global 0.25x0.25 degree gridded dataset of Advanced Very High-Resolution Radiometer (AVHRR) derived sea surface temperatures at a daily resolution, from 1982 to 2020. Further in the text, we refer to OISST data as simply SST. The source data is currently available at: https://www.ncdc.noaa.gov/oisst. The code was written in R studio IDE (v.1.4.1717) working on R v.4.1.2.
 
 ### Marine Heatwaves events
 
-To detect marine heatwaves events, we calculated our climatological period (the statistical properties of the time series, including the mean, variance, seasonal cycle, and quantiles) over the whole time series. We then detected marine heatwaves from SST daily data within each 0.25-degree grid (i.e., each pixel). Since the analysis is pixel-based, it is independent of the size of the region bounding box selected, which is reported in Figure S1. The number and duration of marine heatwaves were calculated as periods of five or more consecutive days when daily SST was greater than the 90^th^ percentile of our climatological threshold based on our time series ( @hobday2016 ). After detecting the events, we fit a generalized linear model (GLM) with a Poisson distribution to each pixel to calculate rates of change in marine heatwaves frequency. The marine heatwaves analysis was completed using the R package heatwaveR ( @schlegel2018 ).
+To detect marine heatwaves events, we calculated our climatological period (the statistical properties of the time series, including the mean, variance, seasonal cycle, and quantiles) over the whole time series. We then detected marine heatwaves from SST daily data within each 0.25-degree grid (i.e., each pixel). Since the analysis is pixel-based, it is independent of the size of the region bounding box selected. The number and duration of marine heatwaves were calculated as periods of five or more consecutive days when daily SST was greater than the 90^th^ percentile of our climatological threshold based on our time series ( @hobday2016 ). After detecting the events, we fit a generalized linear model (GLM) with a Poisson distribution to each pixel to calculate rates of change in marine heatwaves frequency. The marine heatwaves analysis was completed using the R package heatwaveR ( @schlegel2018 ).
 
 ### Temperature space-time models
 
@@ -26,7 +26,7 @@ where *β*~0~ is the intercept and *f*(𝑥~1~, 𝑥~2~) represents the smooth i
 
 We used a similar approach for our analysis of the seasonal effects (Month) to know how much the temperature changed on a month-to-month basis over the years. In this analysis, we wanted to model any variation in, or interaction between, the trend and seasonal features of the data. We used the same formula (1) as for the space-time model but this time we modeled Year and Month as covariates. For the Month term, we used a cyclic cubic spline, as there should be no discontinuity between January and December. However, since we will be using monthly averaged data, to avoid jumps in SST values that can be quite different (e.g., December 1^st^ vs January 1^st^) we created smooth boundary knots such that the distance between December and January is the same as the distance between any other month. In practice, we achieved this by using knots at 0.5 and 12.5 and creating a sequence spreading evenly between 1 and 12.
 
-As a statistical protocol for our GAM analysis, we followed commonly applied methods to check the validity of the model fit as well as autocorrelation problems ( @zuur2016; @wood2017 ). We used the mgcv R package ( @wood2011 ) for all the GAM analyses in this project.  
+As a statistical protocol for our GAM analysis, we followed commonly applied methods to check the validity of the model fit as well as autocorrelation problems ( @zuur2016; @wood2017 ). We used the mgcv R package ( @wood2011 ) for all the GAM analyses in this project.
 
 ### Machine Learning model
 
@@ -56,4 +56,4 @@ The model accuracy scored 0.81.
 
 The training stopped after 25 iterations when a local solution with an optimization value of MSE = 0.00354 and a Poisson loss = 0.815 was found.
 
-The code to reproduce the ML model is available [here](https://github.com/CBMC-GCMP/McGovern_final_insight_blog/blob/main/modelo-PGeneral.ipynb), which was run on a SageMaker studio environment.
+The code to reproduce the ML model is available [here](https://github.com/CBMC-GCMP/accelerator-grant-cbmc/blob/master/code/modelo-PGeneral.ipynb), which was run on a SageMaker studio environment.
